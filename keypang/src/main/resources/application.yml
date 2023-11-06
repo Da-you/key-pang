@@ -1,9 +1,0 @@
-spring:
-  datasource:
-    url:
-    username: sa
-    password:
-  jpa:
-    hibernate:
-      ddl-auto: create
-    open-in-view: false
