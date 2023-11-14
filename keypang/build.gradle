@@ -28,11 +28,16 @@ dependencies {
 
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'com.h2database:h2'
-	runtimeOnly 'mysql:mysql-connector-java'
+	runtimeOnly 'com.mysql:mysql-connector-j'
 	annotationProcessor 'org.projectlombok:lombok'
 
 	//coolSms
 	implementation 'net.nurigo:sdk:4.3.0'
+	// redis
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
+	implementation group: 'org.json', name: 'json', version: '20201115'
+
 
 
 

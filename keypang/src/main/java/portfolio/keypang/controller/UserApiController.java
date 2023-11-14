@@ -12,13 +12,13 @@ import portfolio.keypang.service.UserService;
 @RequiredArgsConstructor
 public class UserApiController {
 
-  private final UserService userService;
+    private final UserService userService;
 
-  @PostMapping()
-  @ResponseStatus(HttpStatus.CREATED)
-  public void userSave(@RequestBody @Valid UserDto.UserSaveRequest request) {
-    userService.save(request);
-  }
+    @PostMapping()
+    @ResponseStatus(HttpStatus.CREATED)
+    public void userSave(@RequestBody @Valid UserDto.UserSaveRequest request){
+        userService.save(request);
+    }
 
 
 }

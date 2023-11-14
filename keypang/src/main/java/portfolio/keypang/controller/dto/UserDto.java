@@ -1,5 +1,6 @@
 package portfolio.keypang.controller.dto;
 
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
@@ -58,6 +59,14 @@ public class UserDto {
           .userLevel(UserLevel.USER)
           .build();
     }
+  }
 
+  @Getter
+  @NoArgsConstructor
+  static class VerificationRequest {
+
+    private String phone;
+
+    private String verificationCode;
   }
 }
