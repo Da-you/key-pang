@@ -1,23 +1,31 @@
 package portfolio.keypang.service;
 
 import java.security.SecureRandom;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import portfolio.keypang.controller.dto.UserDto.UserSaveRequest;
-import portfolio.keypang.controller.dto.UserDto.UserSaveRequest.LoginRequest;
 import portfolio.keypang.domain.users.user.User;
 import portfolio.keypang.domain.users.user.UserRepository;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
+
   private static final String PREFIX = "KP";
   private static final int RANDOM_NUM_LENGTH = 6;
 
   private final UserRepository userRepository;
 
+  public String generateUniqueId() {
+    SecureRandom random = new SecureRandom();
+    random.setSeed(System.currentTimeMillis());
+    StringBuilder key = new StringBuilder(PREFIX);
+    for (int i = 0; i < RANDOM_NUM_LENGTH; i++) {
+      key.append(random.nextInt(10));
+    }
+    return key.toString();
+  }
 
   @Transactional
   public void save(UserSaveRequest request) {
@@ -38,15 +46,5 @@ public class UserService {
     user.generateUniqueId(generateUniqueId());
 
     userRepository.save(user);
-  }
-
-  public String generateUniqueId() {
-    SecureRandom random = new SecureRandom();
-    random.setSeed(System.currentTimeMillis());
-    StringBuilder key = new StringBuilder(PREFIX);
-    for (int i = 0; i < RANDOM_NUM_LENGTH; i++) {
-      key.append(random.nextInt(10));
-    }
-    return key.toString();
   }
 }

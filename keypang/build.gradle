@@ -31,6 +31,9 @@ dependencies {
 	runtimeOnly 'mysql:mysql-connector-java'
 	annotationProcessor 'org.projectlombok:lombok'
 
+	//coolSms
+	implementation 'net.nurigo:sdk:4.3.0'
+
 
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
