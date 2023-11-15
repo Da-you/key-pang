@@ -62,9 +62,8 @@ public class UserDto {
   }
 
   @Getter
-  @NoArgsConstructor
-  static class VerificationRequest {
-
+  @NoArgsConstructor(access = AccessLevel.PROTECTED)
+  public static class VerificationRequest {
     private String phone;
 
     private String verificationCode;

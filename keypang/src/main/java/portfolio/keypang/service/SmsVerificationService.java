@@ -15,7 +15,9 @@ import net.nurigo.sdk.message.service.DefaultMessageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import portfolio.keypang.common.properties.AppProperties;
+import portfolio.keypang.controller.dto.UserDto.VerificationRequest;
 import portfolio.keypang.utils.RedisUtil;
 
 @Slf4j
@@ -47,7 +49,7 @@ public class SmsVerificationService {
         + "인증번호는 [" + verificationCode + "] 입니다.";
   }
 
-
+  @Transactional
   public void sendSms(String phone) {
     Message sms = new Message();
     sms.setFrom(appProperties.getFrom());
@@ -57,8 +59,9 @@ public class SmsVerificationService {
     String verificationCode = createVerificationCode();
 
     try {
-      SingleMessageSentResponse result = messageService.sendOne(
-          new SingleMessageSendingRequest(sms));
+      messageService.sendOne(
+          new SingleMessageSendingRequest(sms)
+      );
     } catch (Exception e) {
       log.error("문자 전송 실패");
     }
@@ -66,8 +69,18 @@ public class SmsVerificationService {
     log.info("인증번호: {}", verificationCode);
   }
 
-  public boolean verifyCode() {
-    return true;
+  @Transactional
+  public void verifyCode(VerificationRequest request) {
+    if (isVerify(request)) {
+      throw new IllegalArgumentException("인증번호가 일치하지 않습니다.");
+    }
+    redisUtil.removeVerificationCode(request.getPhone());
+
+  }
+
+  public boolean isVerify(VerificationRequest request) {
+    return (!redisUtil.hasKey(request.getPhone()) &&
+        redisUtil.getVerificationCode(request.getPhone()).equals(request.getVerificationCode()));
   }
 
 }
