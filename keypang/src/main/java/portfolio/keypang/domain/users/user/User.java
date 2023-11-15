@@ -1,15 +1,16 @@
 package portfolio.keypang.domain.users.user;
 
-import jakarta.persistence.*;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
-import org.hibernate.sql.exec.spi.StandardEntityInstanceResolver;
 import portfolio.keypang.domain.users.common.AuthInfo;
 import portfolio.keypang.domain.users.common.UserLevel;
 
-import static jakarta.persistence.GenerationType.*;
 
 @Entity
 @Table(name = "users")
