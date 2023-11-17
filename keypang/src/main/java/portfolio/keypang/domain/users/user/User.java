@@ -25,8 +25,8 @@ public class User extends AuthInfo {
   private String nickname;
 
   private String password;
-
-  private boolean phoneVerified;
+  @Column(nullable = false)
+  private boolean phoneVerified = false;
 
 
   @Builder
@@ -44,7 +44,7 @@ public class User extends AuthInfo {
   }
 
   public void isPhoneVerified(boolean phoneVerified) {
-    this.phoneVerified = phoneVerified;
+    this.phoneVerified = true;
   }
 
 

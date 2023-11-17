@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import portfolio.keypang.controller.dto.UserDto;
 import portfolio.keypang.controller.dto.UserDto.VerificationRequest;
+import portfolio.keypang.service.LoginService;
 import portfolio.keypang.service.SmsVerificationService;
 import portfolio.keypang.service.UserService;
 
@@ -15,12 +16,18 @@ import portfolio.keypang.service.UserService;
 public class UserApiController {
 
   private final UserService userService;
+  private final LoginService loginService;
   private final SmsVerificationService smsVerificationService;
 
   @PostMapping()
   @ResponseStatus(HttpStatus.CREATED)
   public void userSave(@RequestBody @Valid UserDto.UserSaveRequest request) {
     userService.save(request);
+  }
+  @PostMapping("/login")
+  @ResponseStatus(HttpStatus.OK)
+  public void login(@RequestBody @Valid UserDto.UserSaveRequest.LoginRequest request) {
+    loginService.login(request);
   }
 
   @PostMapping("/phones/send-verification")
