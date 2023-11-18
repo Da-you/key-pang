@@ -34,16 +34,6 @@ public class UserDto {
     @Pattern(regexp = "^(?=.*[a-zA-Z])(?=.*[0-9]).{8,20}$", message = "password는 영문, 숫자를 포함한 8자 이상 20자 이하로 입력해주세요.")
     private String password;
 
-    @Getter
-    @NoArgsConstructor(access = AccessLevel.PROTECTED)
-    public static class LoginRequest {
-
-      @NotBlank(message = "uniqueId는 필수 입력 값입니다.")
-      private String uniqueId;
-      @NotBlank(message = "password는 필수 입력 값입니다.")
-      private String password;
-    }
-
     @Builder
     public UserSaveRequest(String username, String nickname, String password) {
       this.username = username;
@@ -74,4 +64,20 @@ public class UserDto {
 
     private String verificationCode;
   }
+
+  @Getter
+  @AllArgsConstructor
+  @NoArgsConstructor(access = AccessLevel.PROTECTED)
+  public static class LoginRequest {
+
+    @NotBlank(message = "uniqueId는 필수 입력 값입니다.")
+    private String uniqueId;
+    @NotBlank(message = "password는 필수 입력 값입니다.")
+    private String password;
+
+    public void passwordEncode(EncryptionService encryptionService) {
+      this.password = encryptionService.encrypt(password);
+    }
+  }
+
 }

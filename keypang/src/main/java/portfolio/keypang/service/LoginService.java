@@ -8,7 +8,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import portfolio.keypang.common.exception.ExceptionStatus;
 import portfolio.keypang.common.exception.GlobalException;
-import portfolio.keypang.controller.dto.UserDto.UserSaveRequest.LoginRequest;
+import portfolio.keypang.controller.dto.UserDto.LoginRequest;
+import portfolio.keypang.domain.users.user.User;
 import portfolio.keypang.domain.users.user.UserRepository;
 
 @Slf4j
@@ -18,6 +19,7 @@ public class LoginService {
 
   private final HttpSession httpSession;
   private final UserRepository userRepository;
+  private final InternalService internalService;
 
   @Transactional(readOnly = true)
   public void login(LoginRequest request) {
@@ -32,7 +34,6 @@ public class LoginService {
     if (!userRepository.existsByUniqueIdAndPassword(request.getUniqueId(), request.getPassword())) {
       throw new GlobalException(ExceptionStatus.USER_NOT_FOUND);
     }
-    ;
   }
 
   @Transactional
