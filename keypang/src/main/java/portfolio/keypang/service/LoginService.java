@@ -1,7 +1,6 @@
 package portfolio.keypang.service;
 
 import jakarta.servlet.http.HttpSession;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -9,7 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 import portfolio.keypang.common.exception.ExceptionStatus;
 import portfolio.keypang.common.exception.GlobalException;
 import portfolio.keypang.controller.dto.UserDto.LoginRequest;
-import portfolio.keypang.domain.users.user.User;
 import portfolio.keypang.domain.users.user.UserRepository;
 
 @Slf4j
