@@ -30,6 +30,8 @@ public class Item extends BaseTimeEntity {
   private Long id;
   @Column(nullable = false)
   private String name;
+  @Column(unique = true, nullable = false)
+  private String itemNum;
   @Column(nullable = false)
   private Integer price;
 
@@ -49,4 +51,19 @@ public class Item extends BaseTimeEntity {
   @JoinColumn(name = "seller_id")
   private Seller seller;
 
+  public static Item of(String name, String itemNum, Integer price, String thumbNail,
+      KeyboardType keyboardType,
+      WireType wireType, WorkType workType, Integer stock, Seller seller) {
+    Item item = new Item();
+    item.name = name;
+    item.itemNum = itemNum;
+    item.price = price;
+    item.thumbNail = thumbNail;
+    item.keyboardType = keyboardType;
+    item.wireType = wireType;
+    item.workType = workType;
+    item.stock = stock;
+    item.seller = seller;
+    return item;
+  }
 }

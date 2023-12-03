@@ -5,6 +5,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import portfolio.keypang.common.exception.ExceptionStatus;
 import portfolio.keypang.common.exception.GlobalException;
+import portfolio.keypang.domain.sellers.Seller;
+import portfolio.keypang.domain.sellers.SellerRepository;
 import portfolio.keypang.domain.users.user.User;
 import portfolio.keypang.domain.users.user.UserRepository;
 
@@ -13,6 +15,7 @@ import portfolio.keypang.domain.users.user.UserRepository;
 public class InternalService {
 
   private final UserRepository userRepository;
+  private final SellerRepository sellerRepository;
   private final HttpSession httpSession;
 
 
@@ -27,6 +30,14 @@ public class InternalService {
   public User getUniqueIdBySession() {
     String uniqueId = (String) httpSession.getAttribute("user");
     return userRepository.findByUniqueId(uniqueId);
+  }
+
+  public Seller getSellerByUniqueId(String uniqueId) {
+    User user = getUserByUniqueId(uniqueId);
+    if (sellerRepository.existsByUser(user)) {
+      throw new GlobalException(ExceptionStatus.UNREGISTERED_SELLER);
+    }
+    return sellerRepository.findByUser(user);
   }
 
 
