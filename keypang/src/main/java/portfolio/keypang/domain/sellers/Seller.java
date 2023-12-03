@@ -10,8 +10,10 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import portfolio.keypang.domain.BaseTimeEntity;
 import portfolio.keypang.domain.users.user.User;
 
@@ -35,6 +37,12 @@ public class Seller extends BaseTimeEntity {
   @JoinColumn(name = "user_id")
   private User user;
 
-
-
+  @Builder
+  public static Seller of(String brandName, String businessNum, User user) {
+    return Seller.builder()
+        .brandName(brandName)
+        .businessNum(businessNum)
+        .user(user)
+        .build();
+  }
 }
