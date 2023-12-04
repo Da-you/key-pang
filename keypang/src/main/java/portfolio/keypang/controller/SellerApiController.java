@@ -12,15 +12,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import portfolio.keypang.common.dto.SuccessResponse;
-import portfolio.keypang.controller.dto.SellerDto;
+import org.springframework.web.multipart.MultipartFile;
 import portfolio.keypang.controller.dto.SellerDto.RegisterRequest;
 import portfolio.keypang.controller.dto.SellerDto.SellerListResponse;
 import portfolio.keypang.controller.dto.SellerDto.UpdateSellerBusinessNumRequest;
 import portfolio.keypang.controller.dto.SellerDto.UpdateSellerNameRequest;
 import portfolio.keypang.domain.users.common.annotation.CurrentUser;
 import portfolio.keypang.service.SellerService;
-import retrofit2.http.GET;
 
 @RestController
 @RequiredArgsConstructor
