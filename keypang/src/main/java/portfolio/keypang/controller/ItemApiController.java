@@ -24,7 +24,7 @@ public class ItemApiController {
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
   public void register(@CurrentUser String uniqueId, @RequestBody @Valid RegisterRequest request,
-      @RequestPart MultipartFile imagePath) {
+      @RequestPart(required = false) MultipartFile imagePath) {
     itemService.register(uniqueId, request, imagePath);
 
   }

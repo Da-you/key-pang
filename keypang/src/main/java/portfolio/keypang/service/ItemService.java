@@ -9,6 +9,7 @@ import portfolio.keypang.controller.dto.ItemDto.RegisterRequest;
 import portfolio.keypang.domain.Item.Item;
 import portfolio.keypang.domain.Item.ItemRepository;
 import portfolio.keypang.domain.sellers.Seller;
+import portfolio.keypang.service.s3.AwsS3Service;
 
 @Service
 @RequiredArgsConstructor
@@ -16,6 +17,7 @@ public class ItemService {
 
   private final ItemRepository itemRepository;
   private final InternalService internalService;
+  private final AwsS3Service s3Service;
 
   public String generateItemNum(Seller seller) {
     SecureRandom random = new SecureRandom();
@@ -31,21 +33,29 @@ public class ItemService {
   public void register(String uniqueId, RegisterRequest request, MultipartFile imagePath) {
     Seller seller = internalService.getSellerByUniqueId(uniqueId);
     String itemNum = generateItemNum(seller);
+
     if (itemRepository.existsByItemNum(itemNum)) {
       String retryNum = itemNum + "R";
       itemRepository.save(
           Item.of(request.getName(), retryNum,
-              request.getPrice(), request.getThumbNail(),
-              request.getKeyboardType(), request.getWireType(),
-              request.getWorkType(), request.getStock(), seller)
+              request.getPrice(), imagePath(imagePath), request.getKeyboardType(),
+              request.getWireType(), request.getWorkType(),
+              request.getStock(), seller)
       );
     }
     itemRepository.save(
         Item.of(request.getName(), itemNum,
-            request.getPrice(), request.getThumbNail(),
+            request.getPrice(), imagePath(imagePath),
             request.getKeyboardType(), request.getWireType(),
             request.getWorkType(), request.getStock(), seller)
     );
+  }
+
+  private String imagePath(MultipartFile imagePath) {
+    if (imagePath == null) {
+      return null;
+    }
+    return s3Service.upload(imagePath, null);
   }
 
 }
