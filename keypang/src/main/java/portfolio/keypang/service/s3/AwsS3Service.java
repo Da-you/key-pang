@@ -43,8 +43,8 @@ public class AwsS3Service {
         .build();
   }
 
-  public void uploadItemImage(MultipartFile file) {
-    upload(file, awsProperties.getBucket(), awsProperties.getFolder());
+  public String uploadItemImage(MultipartFile file) {
+   return upload(file, awsProperties.getBucket(), awsProperties.getFolder());
   }
 
   public String upload(MultipartFile file, String bucket, String folder) {
