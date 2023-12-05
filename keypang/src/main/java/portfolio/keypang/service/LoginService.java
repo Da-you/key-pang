@@ -17,7 +17,6 @@ public class LoginService {
 
   private final HttpSession httpSession;
   private final UserRepository userRepository;
-  private final InternalService internalService;
 
   @Transactional(readOnly = true)
   public void login(LoginRequest request) {
