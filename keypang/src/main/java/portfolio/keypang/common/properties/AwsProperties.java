@@ -13,6 +13,14 @@ public class AwsProperties {
   private final Credentials credentials = new Credentials();
   private final S3 s3 = new S3();
   private final Region region = new Region();
+  private final Folder folder = new Folder();
+
+  @Getter
+  @Setter
+  public static class Folder {
+
+    private String itemFolder;
+  }
 
 
   @Getter
@@ -27,8 +35,9 @@ public class AwsProperties {
   @Setter
   public static class S3 {
 
-    private String item;
+    private String keypang;
   }
+
 
   @Getter
   @Setter
@@ -45,10 +54,13 @@ public class AwsProperties {
     return credentials.getSecretKey();
   }
 
-  public String getItemBucket() {
-    return s3.getItem();
+  public String getBucket() {
+    return s3.getKeypang();
   }
 
+  public String getFolder() {
+    return folder.getItemFolder();
+  }
 
 
   public String getRegionStatic() {
