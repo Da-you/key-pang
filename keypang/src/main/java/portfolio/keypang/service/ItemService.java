@@ -22,7 +22,7 @@ public class ItemService {
   public String generateItemNum(Seller seller) {
     SecureRandom random = new SecureRandom();
     random.setSeed(System.currentTimeMillis());
-    StringBuilder key = new StringBuilder(seller.getBrandName());
+    StringBuilder key = new StringBuilder(seller.getSellerName());
     for (int i = 0; i < 6; i++) {
       key.append(random.nextInt(10));
     }
