@@ -16,7 +16,6 @@ import org.apache.tika.Tika;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import portfolio.keypang.common.properties.AppProperties;
 import portfolio.keypang.common.properties.AwsProperties;
 import portfolio.keypang.exception.ImageFIleRoadFailedException;
 import portfolio.keypang.service.s3.utils.FileNameUtils;
@@ -44,12 +43,17 @@ public class AwsS3Service {
         .build();
   }
 
-  public String upload(MultipartFile file, String bucket) {
+  public void uploadItemImage(MultipartFile file) {
+    upload(file, awsProperties.getBucket(), awsProperties.getFolder());
+  }
+
+  public String upload(MultipartFile file, String bucket, String folder) {
     log.info("bucket name = {}", bucket);
     String fileName = file.getOriginalFilename();
     log.info("originalFileName = {}", fileName);
     String convertedFileName = FileNameUtils.fileNameConvert(fileName);
     log.info("convertedFileName = {}", convertedFileName);
+    String fullFileName = folder + "/" + convertedFileName;
     try {
       String mimeType = new Tika().detect(file.getInputStream());
       ObjectMetadata metadata = new ObjectMetadata();
@@ -57,7 +61,7 @@ public class AwsS3Service {
       FileNameUtils.checkImageType(mimeType);
       metadata.setContentType(mimeType);
       s3Client.putObject(
-          new PutObjectRequest(bucket, convertedFileName, file.getInputStream(), metadata)
+          new PutObjectRequest(bucket, fullFileName, file.getInputStream(), metadata)
               .withCannedAcl(CannedAccessControlList.PublicRead));
     } catch (IOException e) {
       throw new ImageFIleRoadFailedException();
