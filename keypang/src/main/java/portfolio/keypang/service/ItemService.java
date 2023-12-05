@@ -55,7 +55,7 @@ public class ItemService {
     if (imagePath == null) {
       return null;
     }
-    return s3Service.upload(imagePath, null);
+    return s3Service.uploadItemImage(imagePath);
   }
 
 }
