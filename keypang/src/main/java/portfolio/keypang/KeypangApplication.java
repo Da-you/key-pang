@@ -8,8 +8,8 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 @EnableJpaAuditing // JPA Auditing 활성화
 public class KeypangApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(KeypangApplication.class, args);
-	}
+  public static void main(String[] args) {
+    SpringApplication.run(KeypangApplication.class, args);
+  }
 
 }
