@@ -4,8 +4,10 @@ import jakarta.validation.constraints.NotBlank;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import portfolio.keypang.domain.Item.Item;
 
 public class SellerDto {
 
@@ -41,14 +43,25 @@ public class SellerDto {
 
 
   @Getter
+  @Builder
   @NoArgsConstructor
   @AllArgsConstructor
   public static class SellerListResponse {
 
     private String sellerName;
+    private SellerInfoResponse sellerInfo;
+
+  }
+
+  @Getter
+  @Builder
+  @NoArgsConstructor
+  @AllArgsConstructor
+  public static class SellerInfoResponse {
+    private String userName;
     private String businessNum;
     private String phone;
-    // TODO:  List<Item> items;
+    // TODO : item list 추가
   }
 
 }
