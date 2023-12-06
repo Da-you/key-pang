@@ -9,10 +9,12 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Where;
 import portfolio.keypang.domain.BaseTimeEntity;
 import portfolio.keypang.domain.Item.common.KeyboardType;
 import portfolio.keypang.domain.Item.common.WireType;
@@ -21,6 +23,7 @@ import portfolio.keypang.domain.sellers.Seller;
 
 @Entity
 @Getter
+@Where(clause = "deleted_at is null")
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Item extends BaseTimeEntity {
@@ -50,6 +53,7 @@ public class Item extends BaseTimeEntity {
   @ManyToOne(optional = false)
   @JoinColumn(name = "seller_id")
   private Seller seller;
+  private LocalDateTime deletedAt;
 
   public static Item of(String name, String itemNum, Integer price, String thumbNail,
       KeyboardType keyboardType,
@@ -66,4 +70,21 @@ public class Item extends BaseTimeEntity {
     item.seller = seller;
     return item;
   }
+
+  public void unActive() {
+    this.deletedAt = LocalDateTime.now();
+  }
+
+  public void updateItem(String name, Integer price, KeyboardType keyboardType,
+      WireType wireType, WorkType workType) {
+    this.name = name;
+    this.price = price;
+    this.keyboardType = keyboardType;
+    this.wireType = wireType;
+    this.workType = workType;
+  }
+  public void addItemStock(Integer stock) {
+    this.stock += stock;
+  }
 }
+

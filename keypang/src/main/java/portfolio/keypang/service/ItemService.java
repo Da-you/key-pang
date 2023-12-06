@@ -1,10 +1,16 @@
 package portfolio.keypang.service;
 
 import java.security.SecureRandom;
+import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import portfolio.keypang.common.exception.ExceptionStatus;
+import portfolio.keypang.common.exception.GlobalException;
+import portfolio.keypang.controller.dto.ItemDto.ItemStockRequest;
 import portfolio.keypang.controller.dto.ItemDto.RegisterRequest;
 import portfolio.keypang.domain.Item.Item;
 import portfolio.keypang.domain.Item.ItemRepository;
@@ -49,6 +55,45 @@ public class ItemService {
             request.getKeyboardType(), request.getWireType(),
             request.getWorkType(), request.getStock(), seller)
     );
+  }
+
+  @Transactional
+  public void unActiveItem(String uniqueId, Long itemId) {
+    Seller seller = internalService.getSellerByUniqueId(uniqueId);
+    Item item = checkSellrItem(itemId, seller);
+    item.unActive();
+  }
+
+  @Transactional
+  public void updateInfo(String uniqueId, Long itemId, RegisterRequest request) {
+    Seller seller = internalService.getSellerByUniqueId(uniqueId);
+    Item item = checkSellrItem(itemId, seller);
+    item.updateItem(request.getName(), request.getPrice(),
+        request.getKeyboardType(), request.getWireType(), request.getWorkType());
+  }
+
+  @Transactional
+  public void addStock(String uniqueId, Long itemId, ItemStockRequest request) {
+    Seller seller = internalService.getSellerByUniqueId(uniqueId);
+    Item item = checkSellrItem(itemId, seller);
+    item.addItemStock(request.getStock());
+
+  }
+//
+//  public void updateImage(String uniqueId, Long itemId, MultipartFile updateImage) {
+//    Seller seller = internalService.getSellerByUniqueId(uniqueId);
+//    Item item = checkSellrItem(itemId, seller);
+//    if ()
+//  }
+
+
+  private Item checkSellrItem(Long itemId, Seller seller) {
+    Item item = itemRepository.findById(itemId).orElseThrow(() -> new GlobalException(
+        ExceptionStatus.ITEM_NOT_FOUND));
+    if (!item.getSeller().equals(seller)) {
+      throw new GlobalException(ExceptionStatus.UNAUTHORIZED_SELLER);
+    }
+    return item;
   }
 
   private String imagePath(MultipartFile imagePath) {
