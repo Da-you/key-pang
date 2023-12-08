@@ -86,5 +86,11 @@ public class Item extends BaseTimeEntity {
   public void addItemStock(Integer stock) {
     this.stock += stock;
   }
+  public void updateThumbNail(String thumbNail) {
+    this.thumbNail = thumbNail;
+  }
+  public void deleteImage() {
+    this.thumbNail = null;
+  }
 }
 

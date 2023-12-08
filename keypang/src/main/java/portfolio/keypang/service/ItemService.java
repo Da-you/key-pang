@@ -16,6 +16,7 @@ import portfolio.keypang.domain.Item.Item;
 import portfolio.keypang.domain.Item.ItemRepository;
 import portfolio.keypang.domain.sellers.Seller;
 import portfolio.keypang.service.s3.AwsS3Service;
+import portfolio.keypang.service.s3.utils.FileNameUtils;
 
 @Service
 @RequiredArgsConstructor
@@ -79,12 +80,18 @@ public class ItemService {
     item.addItemStock(request.getStock());
 
   }
-//
-//  public void updateImage(String uniqueId, Long itemId, MultipartFile updateImage) {
-//    Seller seller = internalService.getSellerByUniqueId(uniqueId);
-//    Item item = checkSellrItem(itemId, seller);
-//    if ()
-//  }
+
+  @Transactional
+  public void updateImage(String uniqueId, Long itemId, MultipartFile updateImage) {
+    Seller seller = internalService.getSellerByUniqueId(uniqueId);
+    Item item = checkSellrItem(itemId, seller);
+
+    if (item.getThumbNail() != null && updateImage == null || item.getThumbNail() != null) {
+      String key = FileNameUtils.getFileName(item.getThumbNail());
+      s3Service.deleteItemImage(key);
+      item.deleteImage();
+    }
+  }
 
 
   private Item checkSellrItem(Long itemId, Seller seller) {
