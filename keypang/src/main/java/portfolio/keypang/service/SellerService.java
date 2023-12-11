@@ -1,11 +1,20 @@
 package portfolio.keypang.service;
 
+import static portfolio.keypang.controller.dto.SellerDto.SellerListResponse.*;
+
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import portfolio.keypang.common.dto.PageResponse;
 import portfolio.keypang.common.exception.ExceptionStatus;
 import portfolio.keypang.common.exception.GlobalException;
 import portfolio.keypang.controller.dto.SellerDto.RegisterRequest;
+import portfolio.keypang.controller.dto.SellerDto.SellerInfoResponse;
+import portfolio.keypang.controller.dto.SellerDto.SellerListResponse;
 import portfolio.keypang.controller.dto.SellerDto.UpdateSellerBusinessNumRequest;
 import portfolio.keypang.controller.dto.SellerDto.UpdateSellerNameRequest;
 import portfolio.keypang.domain.sellers.Seller;
@@ -19,7 +28,6 @@ public class SellerService {
 
   private final SellerRepository sellerRepository;
   private final InternalService internalService;
-
 
 
   @Transactional
@@ -58,7 +66,7 @@ public class SellerService {
   }
 
   private void checkDuplicateSellerName(UpdateSellerNameRequest request) {
-    if (sellerRepository.existsByBrandName(request.getSellerName())) {
+    if (sellerRepository.existsBySellerName(request.getSellerName())) {
       throw new GlobalException(ExceptionStatus.DUPLICATE_BRAND_NAME);
     }
   }
@@ -70,7 +78,7 @@ public class SellerService {
   }
 
   private void checkBusinessInfo(RegisterRequest request) {
-    if (sellerRepository.existsByBrandName(request.getSellerName())) {
+    if (sellerRepository.existsBySellerName(request.getSellerName())) {
       throw new GlobalException(ExceptionStatus.DUPLICATE_BRAND_NAME);
     }
     if (sellerRepository.existsByBusinessNum(request.getBusinessNum())) {
@@ -78,4 +86,34 @@ public class SellerService {
     }
   }
 
+  @Transactional(readOnly = true)
+  public PageResponse<SellerListResponse> getSellerList() {
+    Page<Seller> sellers = sellerRepository.findAll(PageRequest.of(0, 10));
+
+    List<SellerListResponse> contents = sellers.getContent().stream()
+        .map(seller -> builder()
+            .sellerName(seller.getSellerName())
+            .sellerInfo(SellerInfoResponse.builder()
+                .userName(seller.getUser().getNickname())
+                .businessNum(seller.getBusinessNum())
+                .phone(seller.getUser().getPhone())
+                .build()
+            )
+            .build())
+        .collect(Collectors.toList());
+    return PageResponse.of(sellers, contents);
+  }
+
+  @Transactional(readOnly = true)
+  public SellerInfoResponse getSellerInfo(String sellerName) {
+    Seller seller = sellerRepository.findBySellerName(sellerName);
+    if (seller == null) {
+      throw new GlobalException(ExceptionStatus.SELLER_NOT_FOUND);
+    }
+    return SellerInfoResponse.builder()
+        .userName(seller.getUser().getNickname())
+        .businessNum(seller.getBusinessNum())
+        .phone(seller.getUser().getPhone())
+        .build();
+  }
 }
