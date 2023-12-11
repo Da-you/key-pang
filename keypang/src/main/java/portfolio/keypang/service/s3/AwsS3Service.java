@@ -44,7 +44,7 @@ public class AwsS3Service {
   }
 
   public String uploadItemImage(MultipartFile file) {
-   return upload(file, awsProperties.getBucket(), awsProperties.getFolder());
+    return upload(file, awsProperties.getBucket(), awsProperties.getFolder());
   }
 
   public String upload(MultipartFile file, String bucket, String folder) {
@@ -67,6 +67,10 @@ public class AwsS3Service {
       throw new ImageFIleRoadFailedException();
     }
     return s3Client.getUrl(bucket, convertedFileName).toString();
+  }
+
+  public void deleteItemImage(String key) {
+    delete(awsProperties.getBucket(), key);
   }
 
   public void delete(String bucket, String key) {
