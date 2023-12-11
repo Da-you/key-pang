@@ -5,11 +5,13 @@ import portfolio.keypang.domain.users.user.User;
 
 public interface SellerRepository extends JpaRepository<Seller,Long> {
 
-  boolean existsByBrandName(String brandName);
+  boolean existsBySellerName(String sellerName);
 
   boolean existsByBusinessNum(String businessNum);
 
   boolean existsByUser(User user);
 
   Seller findByUser(User user);
+
+  Seller findBySellerName(String sellerName);
 }
