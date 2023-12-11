@@ -38,8 +38,30 @@ public class ItemDto {
   @NoArgsConstructor(access = AccessLevel.PROTECTED)
   public static class ItemStockRequest {
 
-      @NotBlank(message = "재고를 입력해주세요.")
-      @Min(value = 1, message = "재고는 0 이상이어야 합니다.")
-      private Integer stock;
+    @NotBlank(message = "재고를 입력해주세요.")
+    @Min(value = 1, message = "재고는 0 이상이어야 합니다.")
+    private Integer stock;
+  }
+
+  @Getter
+  @AllArgsConstructor
+  @NoArgsConstructor(access = AccessLevel.PROTECTED)
+  public static class ItemInfoResponse {
+    private String itemNum;
+    private String name;
+    private Integer price;
+    private String thumbNail;
+    private KeyboardType keyboardType;
+    private WireType wireType;
+    private WorkType workType;
+    private Integer stock;
+  }
+  @Getter
+  @AllArgsConstructor
+  @NoArgsConstructor(access = AccessLevel.PROTECTED)
+  public static class ItemListResponse {
+    private String itemNum;
+    private String name;
+    private String thumbNail;
   }
 }

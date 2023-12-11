@@ -1,15 +1,16 @@
 package portfolio.keypang.service;
 
 import java.security.SecureRandom;
-import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
-import org.jetbrains.annotations.NotNull;
-import org.springframework.http.HttpStatus;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import portfolio.keypang.common.dto.PageResponse;
 import portfolio.keypang.common.exception.ExceptionStatus;
 import portfolio.keypang.common.exception.GlobalException;
+import portfolio.keypang.controller.dto.ItemDto.ItemInfoResponse;
+import portfolio.keypang.controller.dto.ItemDto.ItemListResponse;
 import portfolio.keypang.controller.dto.ItemDto.ItemStockRequest;
 import portfolio.keypang.controller.dto.ItemDto.RegisterRequest;
 import portfolio.keypang.domain.Item.Item;
@@ -34,6 +35,15 @@ public class ItemService {
       key.append(random.nextInt(10));
     }
     return key.toString();
+  }
+
+  @Transactional(readOnly = true)
+  public ItemInfoResponse getItemInfo(String uniqueId, Long itemId) {
+    Seller seller = internalService.getSellerByUniqueId(uniqueId);
+    Item item = checkSellrItem(itemId, seller);
+    return new ItemInfoResponse(item.getItemNum(), item.getName(), item.getPrice(),
+        item.getThumbNail(), item.getKeyboardType(), item.getWireType(), item.getWorkType(),
+        item.getStock());
   }
 
   @Transactional
@@ -86,13 +96,19 @@ public class ItemService {
     Seller seller = internalService.getSellerByUniqueId(uniqueId);
     Item item = checkSellrItem(itemId, seller);
 
-    if (item.getThumbNail() != null && updateImage == null || item.getThumbNail() != null) {
+    if (isDeletedThumbnail(updateImage, item)) {
       String key = FileNameUtils.getFileName(item.getThumbNail());
-      s3Service.deleteItemImage(key);
-      item.deleteImage();
+      s3Service.deleteItemImage(key); // 기존 이미지 삭제
+      item.deleteImage(); // DB에서 이미지 정보 삭제
+    }
+    if (updateImage != null) {
+      item.updateThumbNail(imagePath(updateImage));
     }
   }
 
+  private boolean isDeletedThumbnail(MultipartFile updateImage, Item item) {
+    return (item.getThumbNail() != null && updateImage == null);
+  }
 
   private Item checkSellrItem(Long itemId, Seller seller) {
     Item item = itemRepository.findById(itemId).orElseThrow(() -> new GlobalException(
