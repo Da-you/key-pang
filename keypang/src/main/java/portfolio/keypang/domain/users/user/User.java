@@ -3,12 +3,16 @@ package portfolio.keypang.domain.users.user;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import portfolio.keypang.domain.cart.Cart;
 import portfolio.keypang.domain.users.common.AuthInfo;
 import portfolio.keypang.domain.users.common.UserLevel;
 
@@ -30,6 +34,10 @@ public class User extends AuthInfo {
   @Column(nullable = false)
   private boolean phoneVerified = false;
 
+  @OneToOne(fetch = FetchType.LAZY, orphanRemoval = true)
+  @JoinColumn(name = "CART_ID")
+  private Cart cart;
+
 
   @Builder
   public User(String username, String phone, UserLevel userLevel,
@@ -48,6 +56,7 @@ public class User extends AuthInfo {
   public void isPhoneVerified(boolean phoneVerified) {
     this.phoneVerified = phoneVerified;
   }
+
   public void updateLevel(UserLevel userLevel) {
     this.userLevel = userLevel;
   }
