@@ -1,8 +1,10 @@
 package portfolio.keypang.service;
 
 import java.security.SecureRandom;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -37,6 +39,31 @@ public class ItemService {
     return key.toString();
   }
 
+  /**
+   * 일반 유저가 셀러의 상품 정보를 조회
+   */
+  @Transactional(readOnly = true)
+  public ItemInfoResponse getItemInfoByUser(Long itemId, String sellerName) {
+    Seller seller = internalService.getSellerByName(sellerName);
+    Item item = checkSellrItem(itemId, seller);
+    return new ItemInfoResponse(item.getItemNum(), item.getName(), item.getPrice(),
+        item.getThumbNail(), item.getKeyboardType(), item.getWireType(), item.getWorkType(),
+        item.getStock());
+  }
+
+  @Transactional(readOnly = true)
+  public PageResponse<ItemListResponse> getItemListByUser(String sellerName) {
+    Seller seller = internalService.getSellerByName(sellerName);
+    Page<Item> items = itemRepository.findAllBySeller(seller, PageRequest.of(0, 10));
+
+    List<ItemListResponse> contents = items.stream()
+        .map(item -> new ItemListResponse(item.getItemNum(), item.getName(),
+            item.getThumbNail()))
+        .toList();
+    return PageResponse.of(items, contents);
+  }
+
+
   @Transactional(readOnly = true)
   public ItemInfoResponse getItemInfo(String uniqueId, Long itemId) {
     Seller seller = internalService.getSellerByUniqueId(uniqueId);
@@ -44,6 +71,18 @@ public class ItemService {
     return new ItemInfoResponse(item.getItemNum(), item.getName(), item.getPrice(),
         item.getThumbNail(), item.getKeyboardType(), item.getWireType(), item.getWorkType(),
         item.getStock());
+  }
+
+  @Transactional(readOnly = true)
+  public PageResponse<ItemListResponse> getItemList(String uniqueId) {
+    Seller seller = internalService.getSellerByUniqueId(uniqueId);
+    Page<Item> items = itemRepository.findAllBySeller(seller, PageRequest.of(0, 10));
+
+    List<ItemListResponse> contents = items.stream()
+        .map(item -> new ItemListResponse(item.getItemNum(), item.getName(),
+            item.getThumbNail()))
+        .toList();
+    return PageResponse.of(items, contents);
   }
 
   @Transactional
