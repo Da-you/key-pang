@@ -39,6 +39,12 @@ public class InternalService {
     }
     return sellerRepository.findByUser(user);
   }
+  public Seller getSellerByName(String sellerName) {
+    if (!sellerRepository.existsBySellerName(sellerName)) {
+      throw new GlobalException(ExceptionStatus.SELLER_NOT_FOUND);
+    }
+    return sellerRepository.findBySellerName(sellerName);
+  }
 
 
 }

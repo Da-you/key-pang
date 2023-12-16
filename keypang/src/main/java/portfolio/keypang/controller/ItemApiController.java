@@ -12,11 +12,16 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import portfolio.keypang.common.dto.PageResponse;
+import portfolio.keypang.common.dto.SuccessResponse;
 import portfolio.keypang.controller.dto.ItemDto;
+import portfolio.keypang.controller.dto.ItemDto.ItemInfoResponse;
+import portfolio.keypang.controller.dto.ItemDto.ItemListResponse;
 import portfolio.keypang.controller.dto.ItemDto.ItemStockRequest;
 import portfolio.keypang.controller.dto.ItemDto.RegisterRequest;
 import portfolio.keypang.domain.users.common.annotation.CurrentUser;
@@ -36,12 +41,31 @@ public class ItemApiController {
     itemService.register(uniqueId, request, imagePath);
 
   }
-
   @GetMapping("/{itemId}")
   @ResponseStatus(HttpStatus.OK)
-  public ItemDto.ItemInfoResponse getItemInfo(@CurrentUser String uniqueId,
+  public ItemInfoResponse getItemInfo(@CurrentUser String uniqueId,
+      @PathVariable Long itemId,@RequestParam String sellerName) {
+    return itemService.getItemInfoByUser(itemId, sellerName);
+  }
+
+  @GetMapping("itemList")
+  @ResponseStatus(HttpStatus.OK)
+  public SuccessResponse<PageResponse<ItemListResponse>> getItemList(@CurrentUser String uniqueId,
+      @RequestParam String sellerName) {
+    return new SuccessResponse<>(itemService.getItemListByUser(sellerName));
+  }
+
+  @GetMapping("seller/{itemId}")
+  @ResponseStatus(HttpStatus.OK)
+  public ItemInfoResponse getItemInfo(@CurrentUser String uniqueId,
       @PathVariable Long itemId) {
     return itemService.getItemInfo(uniqueId, itemId);
+  }
+
+  @GetMapping("seller/itemList")
+  @ResponseStatus(HttpStatus.OK)
+  public SuccessResponse<PageResponse<ItemListResponse>> getItemList(@CurrentUser String uniqueId) {
+    return new SuccessResponse<>(itemService.getItemList(uniqueId));
   }
 
   @PatchMapping("/{itemId}/info")
