@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import portfolio.keypang.common.exception.ExceptionStatus;
 import portfolio.keypang.common.exception.GlobalException;
+import portfolio.keypang.domain.Item.ItemRepository;
 import portfolio.keypang.domain.sellers.Seller;
 import portfolio.keypang.domain.sellers.SellerRepository;
 import portfolio.keypang.domain.users.user.User;
@@ -16,6 +17,7 @@ public class InternalService {
 
   private final UserRepository userRepository;
   private final SellerRepository sellerRepository;
+  private final ItemRepository itemRepository;
   private final HttpSession httpSession;
 
 
